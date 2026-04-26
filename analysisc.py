@@ -4,10 +4,18 @@ import pandas as pd
 def load_data():
     df=pd.read_csv("dataset.csv")
     return df
-
+# get subject form file
+def get_subjects(df):
+    exclude = [
+        "Name","Attendance","Percentage","Result",
+        "Grade","Strong_Subject","Weak_Subject",
+        "Rank","Risk","Prediction"
+    ]
+    return [c for c in df.columns if c not in exclude]
+    
 # cleaning data handle missing data
 def clean_data(df):
-    subjacts=df.columns.drop(["Name","Attendance"])
+    subjects=get_subjects(df)
     for s in subjects:
         df[s]=df[s].fillna(df[s].mean())
       
@@ -18,8 +26,8 @@ def clean_data(df):
 
 # calculate percentage of student mid sem marks
 def average(df):  
-    subjacts=df.columns.drop(["Name","Attendance"])
-    df["Percentage"] = round(df[subjects].mean(axis =1),2)
+    subjects=get_subjects(df)
+    df["Percentage"] = df[subjects].mean(axis=1).round(2)
     return df 
 
 # result marked
@@ -44,7 +52,7 @@ def grade(df):
 
 # subject averrage
 def subject_average(df):
-     subjacts=df.columns.drop(["Name","Attendance"])
+    subjects=get_subjects(df)
     return df[subjects].mean()
 
 #topper 
@@ -54,13 +62,13 @@ def top_student(df):
 
 # weak subject 
 def  weak_subject(df):
-     subjacts=df.columns.drop(["Name","Attendance"])
+    subjects=get_subjects(df)
     df["Weak_Subject"]=df[subjects].idxmin(axis=1)
     return df
 
 # strong subject
 def strong_subject(df):
-     subjacts=df.columns.drop(["Name","Attendance"])
+    subjects=get_subjects(df)
     df["Strong_Subject"]=df[subjects].idxmax(axis=1)
     return df 
 
@@ -95,7 +103,7 @@ def predict_final(df):
     df["Prediction"]  = df.apply(predict_row,axis =1)
     return df  
 def total_student(df):
-        return len(df)
+    return len(df)
 def pass_count(df):
         
     return len(df [df["Result"]=="Pass"])
